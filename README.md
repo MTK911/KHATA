@@ -20,7 +20,7 @@ http://khata.getforge.io/
 Deploying khata is super easy you just need to have and do few things:
 1. A Server Apache/Nginx etc
 2. PHP installation (Tested it on PHP>7)
-3. Copy all three php files to server root directory
+3. Copy all three php files to server root directory<br>
 Done
 
 ## The necessary
