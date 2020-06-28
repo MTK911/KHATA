@@ -6,7 +6,8 @@ $secret_key = "abcdefghijklmnopabcdefghijklmnop";//Add your Encryption Key Here 
 $key = hash('sha256', $secret_key);//meh
 $iv = substr(hash('sha256', $secret_iv), 0, 16);//meh
 
-$filename = "a744d9a1f4f287e51d681fdea6c10c0aec21773969db86f29dae0b31b0357763";//Name of your File to store encrypted data in (Security Through Obscurity) //CHANGE ME
+$filename = "a744d9a1f4f287e51d681fdea6c10c0aec21773969db86f29dae0b31b0357763";//Name of your file to store encrypted data in (Security Through Obscurity) //CHANGE ME
+$responder = "6DCDE155F1F900E157D25BB5C24B1A54D71EA35B78661ED9B1A8BE3532C3D4F5";//Name of your file to store responder data in (Security Through Obscurity) //CHANGE ME
 $filesize = "1000000000"; //1 GB file size limit in Bytes
 
 //Your UserName and Password to login
