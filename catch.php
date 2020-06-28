@@ -1,9 +1,9 @@
 <?php
 include_once 'configuration.php'; //include all variables from config file
 
-//File Maker
+//File maker
 if (!is_file($filename)) {
-    $myfile = @fopen($filename, "w") or die("Unable to open file!");
+    $myfile = @fopen($filename, "w") or die("Unable to make log file!");
 	fclose($myfile);
 }
 
@@ -78,7 +78,7 @@ $simple_sit = sprintf(
 $size=filesize($filename); //limit log size to 1 GB to prevent DOS/Memory Exhaustion attacks
 if ($size >= $filesize) { 
 	echo '<img src="https://i.giphy.com/12XMGIWtrHBl5e.gif" style="display:block;margin-left: auto;margin-right: auto;width: 75%;" alt-text="File Size limit reached">';
-} else {
+	} else {
 
 $simple_string = htmlentities($simple_sit); //encoding because don't want JS pop-ups or worst
 $message = openssl_encrypt($simple_string, $ciphering, $key, $options, $iv);
@@ -94,9 +94,17 @@ fclose($fwlog);
 //Remove empty lines from file;
 file_put_contents("$filename", implode(PHP_EOL, file("$filename", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)));
 
+//Responder file maker
+if (!is_file($responder)) {
+    $myresponder = @fopen($responder, "w") or die("Unable to make responder file!");
+	fwrite($myresponder, "<?php echo 'MTK' ?>");
+	fclose($myresponder);
+}
+$respond = include($responder);//To include file where responder data is stored. This is so insecure ;(
+
 if (isset($data['CONTACT'])) {
 	die($data['CONTACT']);
 } else {
-	die('MTK'); //Response to show on getting request
+	die($respond); //Response to show on getting request
 }
 }
