@@ -5,7 +5,7 @@ ini_set('session.cookie_secure', '0');//if running on HTTPS turn it on;
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 ini_set('session.use_strict_mode', '1');
-ini_set('session.cookie_samesite', 'Strict');//Old PHP i guess that's why not working
+ini_set('session.cookie_samesite', 'secure');
 
 //Security Headers because why not
 header('X-Frame-Options: DENY');
@@ -17,6 +17,29 @@ session_start();
 //Session string generator
 $hash = md5($random1.$password.$random2); 
 
+//Responder file maker
+if (!is_file($responder)) {
+    $myresponder = @fopen($responder, "w") or die("Unable to make responder file!");
+	fwrite($myresponder, "<?php echo 'MTK' ?>");
+	fclose($myresponder);
+}
+
+//Write data on responder file
+if(isset($_POST['responderdata'], $_POST['Token']))
+{
+	if ($_POST['Token'] != $_SESSION['ANTI']){
+    header("Location: ".$_SERVER['PHP_SELF']);
+
+	}else{
+	
+	$responder_open = fopen($responder,"w+");
+	fwrite($responder_open, $_POST['responderdata']);
+	fclose($responder_open);
+}
+}
+
+//Reading contents of responder file and to display it on textarea window
+$responder_disp = htmlspecialchars(implode("",file($responder)));
 
 //Logout function
 if(isset($_POST['logout'], $_POST['Token']))
@@ -46,6 +69,8 @@ if(isset($_POST['purge'], $_POST['Token']))
 }
 }
 
+
+
 //On Successful Login show all this
 if (isset($_SESSION['login']) && $_SESSION['login'] == $hash) {
 //Anti-CSRF token genrator
@@ -59,14 +84,15 @@ $_SESSION['ANTI']=$tokes
 <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
 <link rel='stylesheet' href='https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css'>
 <link rel='stylesheet' href='https://cdn.datatables.net/buttons/1.2.2/css/buttons.bootstrap.min.css'>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <style>
 //headache
 body {
   margin: 2rem;
 }
 .table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
-	border-color: black;
-	outline: black;
+    border-color: #d6d6d6;
+    outline: #d6d6d6;
 }
 div.dataTables_length {
 	float: left;
@@ -92,10 +118,10 @@ div.dataTables_length {
 }
 
 .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
-	color: #777;
+    color: #777;
     cursor: not-allowed;
     background-color: #fff;
-    border-color: black;
+    border-color: #d6d6d6;
 }
 
 div.dataTables_wrapper div.dataTables_filter input {
@@ -123,15 +149,55 @@ div.dataTables_wrapper div.dataTables_filter input {
   -webkit-appearance: none;
    margin: 0;
 }
+.modalDialog {
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+}
+.modalDialog:target {
+    opacity:1;
+    pointer-events: auto;
+}
+.modalDialog > div {
+	width: 500px;
+	position: relative;
+	margin: 5% auto;
+	padding: 15px;
+	border-radius: 10px;
+	background: #fff;
+}
 </style>
 </head>
+<body style="margin:10;padding:0">
 <!-- Logout Clear Log Buttons-->
 <form action="" method="post">
-<button tabindex="-1" class="btn btn-default buttons-print" style="float:right;margin-left:16px;" name="logout" value="true" type="submit">Logout</button>
+<button tabindex="-1" class="btn btn-default buttons-print" style="float:right;margin-left:10px;" name="logout" value="true" type="submit">Logout</button>
 <button tabindex="-1" class="btn btn-default buttons-print" style="float:right;" name="purge" value="true" type="submit" >Clear Logs</button>
+<a tabindex="-1" class="btn btn-default buttons-print" style="float:right;margin-right:10px;" href="#responder" type="button" >Responder</a>
 <input type='hidden' name='Token' value='<?php echo($_SESSION['ANTI']) ?>' />
 </form>
-
+<div id="responder" class="modalDialog">
+  <div>
+        <form action="" method="post">
+              <div>
+                <textarea wrap="hard" type="text" style="width: 100%; max-width: 100%; margin-bottom: 10px;height:350px; resize: none;" name="responderdata"><?php echo $responder_disp ?></textarea>
+                <button tabindex="1" class="btn btn-default buttons-print" type="submit">Submit</button>
+				<a class="btn btn-default buttons-print" type="button" href="#close">Close</a>
+				<input type='hidden' name='Token' value='<?php echo($_SESSION['ANTI']) ?>' />
+			  </div>
+        </form>
+   </div>
+</div>
 <table id="main" class="table table-striped table-bordered" cellspacing="0" width="100%">
 <?php
 //Where the magic happens
@@ -232,9 +298,30 @@ else {
 
 //CAPTCHA GENRATOR
 function display_login_form(){ 
+
+//magic adder
 $captcha_1 = rand(1,9);
 $captcha_2 = rand(1,9);
 $_SESSION['result'] = $captcha_1+$captcha_2;
+
+//Captcha image 1 generators
+$im = imagecreate(11, 20);
+$bg = imagecolorallocate($im, 255, 255, 255);
+$textcolor = imagecolorallocate($im, 3, 3, 3);
+
+imagestring($im, 6, 1, 0, $captcha_1, $textcolor);
+imagepng($im);
+$imgData=ob_get_contents();ob_clean();
+imagedestroy($im);
+
+//Captcha image 2 generators
+$im2 = imagecreate(11, 20);
+$bg2 = imagecolorallocate($im2, 255, 255, 255);
+$textcolor2 = imagecolorallocate($im2, 3, 3, 3);
+imagestring($im2, 6, 1, 0, $captcha_2, $textcolor2);
+imagepng($im2);
+$imgData2=ob_get_contents();ob_clean();
+imagedestroy($im2);
 
 //Anti-CSRF Token GENRATOR
 $token = bin2hex(openssl_random_pseudo_bytes(16));
@@ -364,7 +451,7 @@ button:hover, button:active, button:focus {
 <h2 class="form-signin-heading"><span id="type-text"></span><span class="blinking-cursor">_</span></h2>
         <input style="margin-bottom:10px;" type="username" name="username" class="form-control" placeholder="Username" required autofocus>
         <input  type="password" name="password" class="form-control" placeholder="Password" required>
-            <div class="captcha"><?php echo $captcha_1 ?> + <?php echo $captcha_2 ?> =</div>
+            <div class="captcha"><?php echo '<img src="data:image/png;base64,'.base64_encode($imgData).'" />'; ?> + <?php echo '<img src="data:image/png;base64,'.base64_encode($imgData2).'" />'; ?> =</div>
 		<input type="number" class="answer" name="answer" required>
 		<input type='hidden' name='csrfToken' value='<?php echo($_SESSION['csrfToken']) ?>' />
         <button name="submit" value="submit" >Sign in</button>
