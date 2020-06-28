@@ -14,7 +14,7 @@ Khata is written in PHP (Yes, I said PHP) because PHP is easily available on all
 For data security I am encrypting received request with AES-256-OFB and keeping them in a plain text file (Now don't be so melodramatic). From where C2 (index.php) picks up all the data decrypts it and present it in readable form. For C2 security I have tried to keep up with the security measures like Anti-CSRF, Captcha, Security Headers, and other stuff I can't remember. (If you have any suggestions to improve security put them in suggestion box).
 
 # Demo
-http://khata.getforge.io/
+http://khata.mtk911.cf/
 
 ## Getting Started
 Deploying khata is super easy you just need to have and do few things:
@@ -26,7 +26,7 @@ Done
 ## The necessary
 1. Change Username and Password(Make sure it is SHA256) in configuration file
 2. Change Key and IV in configuration file for encryption
-3. Change file name in configuration file
+3. Change file name of logs and responder in configuration file
 4. Change random1 and random2 variable
 5. Make sure catch.php has permission to write in directory 
 
@@ -36,7 +36,7 @@ Done
 3. For security reason log file size is limited to 1 GB you can change it to whatever you want
 
 ## Arming
-Khata can be use to detect XSS and SSRF using Khata as a listener. For XSS place Khata in script tag source <script src="http://abc.xyz/catch.php"> in case of XSS vulnerability you will be able to see a log entry in C2. For SSRF visit following [blog](https://portswigger.net/web-security/ssrf).
+Khata can be use to detect XSS and SSRF using Khata as a listener. For XSS place Khata in script tag source <script src="http://abc.xyz/catch.php"> in case of XSS vulnerability you will be able to see a log entry in C2. For SSRF visit following [blog](https://portswigger.net/web-security/ssrf). Using responder function you can define your own response which turns KHATA into multi-function tool and sky is the limit.
   
 ## File Facts
 **index.php**: C2 where you view all data<br>
@@ -50,7 +50,7 @@ Khata can be use to detect XSS and SSRF using Khata as a listener. For XSS place
 <img src="https://i.imgur.com/RQlIzkt.gif" alt="Login" border="0">
 
 ## After login
-<img src="https://i.imgur.com/QgRGsaR.png" alt="Dash" border="0">
+<img src="https://i.imgur.com/ye9bys4.png" alt="Dash" border="0">
 
 ## DISCLAIMER
 All the software/scripts/applications/things in this repository are provided as is, without warranty of any kind. Use of these software/scripts/applications/things is entirely at your own risk. Creator of these softwares/scripts/applications/things is not responsible for any direct or indirect damage to your own or defiantly someone else's property resulting from the use of these software/scripts/applications/things.
@@ -77,3 +77,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+# Changes
+### Ver 2.0
+ + Added responder functionality to display or execute custom payloads on catch.php response
+ + Captcha turned to image for better security
