@@ -16,6 +16,11 @@ For data security I am encrypting received request with AES-256-OFB and keeping 
 # Demo
 http://khata.mtk911.cf/
 
+# Docker deployment
+docker pull mtk911/khata
+
+docker run -d -p 80:80 mtk911/khata
+
 ## Getting Started
 Deploying khata is super easy you just need to have and do few things:
 1. A Server Apache/Nginx etc
@@ -24,7 +29,7 @@ Deploying khata is super easy you just need to have and do few things:
 Done
 
 ## The necessary
-1. Change Username and Password(Make sure it is SHA256) in configuration file
+1. Change Username and Password(Make sure it is SHA256 in lowercase i don't know why lowercase) in configuration file
 2. Change Key and IV in configuration file for encryption
 3. Change file name of logs and responder in configuration file
 4. Change random1 and random2 variable
@@ -51,6 +56,7 @@ Khata can be use to detect XSS and SSRF using Khata as a listener. For XSS place
 
 ## After login
 <img src="https://i.imgur.com/ye9bys4.png" alt="Dash" border="0">
+ 
 
 ## DISCLAIMER
 All the software/scripts/applications/things in this repository are provided as is, without warranty of any kind. Use of these software/scripts/applications/things is entirely at your own risk. Creator of these softwares/scripts/applications/things is not responsible for any direct or indirect damage to your own or defiantly someone else's property resulting from the use of these software/scripts/applications/things.
@@ -82,3 +88,4 @@ SOFTWARE.
 ### Ver 2.0
  + Added responder functionality to display or execute custom payloads on catch.php response
  + Captcha turned to image for better security
+ + CSS changes for UI improvement
