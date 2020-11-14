@@ -14,7 +14,7 @@ Khata is written in PHP (Yes, I said PHP) because PHP is easily available on all
 For data security I am encrypting received request with AES-256-OFB and keeping them in a plain text file (Now don't be so melodramatic). From where C2 (index.php) picks up all the data decrypts it and present it in readable form. For C2 security I have tried to keep up with the security measures like Anti-CSRF, Captcha, Security Headers, and other stuff I can't remember. (If you have any suggestions to improve security put them in suggestion box).
 
 # Demo
-http://khata.mtk911.cf/
+http://khatademo.mtk911.cf/
 
 # Docker deployment
 docker pull mtk911/khata
